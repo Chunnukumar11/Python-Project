@@ -1,0 +1,51 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+df = pd.read_csv("C:/Users/HP/OneDrive/Desktop/INT375 project\sales_data_sample.csv", encoding="latin1")
+
+# Convert ORDERDATE to datetime format
+df["ORDERDATE"] = pd.to_datetime(df["ORDERDATE"], errors='coerce')
+
+# Calculate total revenue
+total_revenue = df["SALES"].sum()
+
+# Product-specific sales
+product_sales = df.groupby("PRODUCTLINE")["SALES"].sum().sort_values(ascending=False)
+
+# Country-wise sales distribution
+country_sales = df.groupby("COUNTRY")["SALES"].sum().sort_values(ascending=False)
+
+# Temporal trends
+yearly_sales = df.groupby("YEAR_ID")["SALES"].sum()
+monthly_sales = df.groupby("MONTH_ID")["SALES"].sum()
+
+# Visualization
+plt.figure(figsize=(12, 6))
+plt.subplot(2, 2, 1)
+product_sales.plot(kind='bar', color='teal')
+plt.title("Sales by Product Line")
+plt.xticks(rotation=45)
+
+plt.subplot(2, 2, 2)
+country_sales.head(10).plot(kind='bar', color='orange')
+plt.title("Top 10 Countries by Sales")
+plt.xticks(rotation=45)
+
+plt.subplot(2, 2, 3)
+yearly_sales.plot(marker='o', color='green')
+plt.title("Yearly Sales Trend")
+plt.xlabel("Year")
+plt.ylabel("Revenue")
+
+plt.subplot(2, 2, 4)
+monthly_sales.plot(kind='bar', color='purple')
+plt.title("Monthly Sales Distribution")
+plt.xlabel("Month")
+plt.ylabel("Revenue")
+
+plt.tight_layout()
+plt.show()
+
+# Print total revenue
+print(f"Total Revenue: ${total_revenue:,.2f}")
